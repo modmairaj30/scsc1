@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="test" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="43947296-d7ea-4f57-9a16-57c1bec3843f">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="parameter1" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT * FROM traffic_voilation where voilation_id= $P{parameter1}]]>
+	</queryString>
+	<field name="voilation_id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="img_path" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="location" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="photo" class="java.lang.Object">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="time" class="java.sql.Time">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="user_id" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="voilation" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="60" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="5e004b1f-d629-4b69-90d2-0a9b7a8209d5" x="158" y="26" width="194" height="34"/>
+				<textElement textAlignment="Center">
+					<font size="15"/>
+				</textElement>
+				<text><![CDATA[SCSC Report]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="9a45a90d-90e5-4fa0-a645-d4fe0b649a66" x="0" y="0" width="79" height="20"/>
+				<textElement/>
+				<text><![CDATA[voilation_id]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d76d53b6-3d60-4124-b08d-c0452474b8b4" x="79" y="0" width="79" height="20"/>
+				<textElement/>
+				<text><![CDATA[img_path]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="28186290-80b1-4d6a-92bc-510ec278ac16" x="158" y="0" width="79" height="20"/>
+				<textElement/>
+				<text><![CDATA[location]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3e24b1b9-002e-4516-a3fc-f8d85c5a1e9e" x="237" y="0" width="79" height="20"/>
+				<textElement/>
+				<text><![CDATA[photo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6e3d0e65-ae0a-48e9-931f-db254b736d27" x="316" y="0" width="79" height="20"/>
+				<textElement/>
+				<text><![CDATA[time]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3b77af57-b543-4ab8-81ed-25d310f5a279" x="395" y="0" width="79" height="20"/>
+				<textElement/>
+				<text><![CDATA[voilation]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="80c3913c-464e-43ce-b2db-e2b7daadc1fb" x="474" y="0" width="79" height="20"/>
+				<textElement/>
+				<text><![CDATA[user_id]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="e18efa23-6777-4fc1-8817-2a5fc16bc555" x="0" y="0" width="79" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{voilation_id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f2204809-1701-425d-8fef-50b4cc77dc68" x="79" y="0" width="79" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{img_path}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="069001d4-1d50-4635-b9b4-0cf873a21097" x="158" y="0" width="79" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{location}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c9c5200f-d1f8-4669-8ffd-3e5e1d36b650" x="237" y="0" width="79" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[""+$F{photo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="63df515e-ace1-4c82-ad3c-cf7b5fce07a3" x="316" y="0" width="79" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{time}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3e1943aa-84bb-4089-b73c-2f69a989ba42" x="395" y="0" width="79" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{voilation}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="10ec9a2d-23fc-41a3-b5a0-267cd89507ff" x="474" y="0" width="79" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{user_id}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
