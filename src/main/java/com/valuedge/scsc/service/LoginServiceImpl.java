@@ -15,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.lowagie.text.pdf.hyphenation.TernaryTree.Iterator;
 import com.valuedge.scsc.entities.LoginDetails;
 import com.valuedge.scsc.entities.User;
 import com.valuedge.scsc.entities.UserDetails;
@@ -40,18 +41,25 @@ public class LoginServiceImpl implements LoginService {
 
 	public String login(LoginDetailsVO loginIdVO) {
 		Optional<User> user = userRepo.findByUserName(loginIdVO.getUserName());
-		/*
-		 * if(user.isPresent()) { byte[] base64decodedBytes
-		 * =Base64.getDecoder().decode(user.get().getPassword()); String
-		 * decodedPassword=""; try { decodedPassword = new String(base64decodedBytes,
-		 * "UTF8"); } catch (UnsupportedEncodingException e) { // TODO Auto-generated
-		 * catch block e.printStackTrace(); }
-		 * if((decodedPassword.equals(loginVO.getPassword()))) {
-		 */
+		
+		LoginDetails login_id = loginRepo.findByLoginStatus(user.get().getUserId());
+		String newLoginId;
+		if(login_id==null) {
+			newLoginId=	firstLogin(loginIdVO, user);
+		
+		}
+		else {
+			newLoginId=	logoutForceFully(loginIdVO,login_id,user);
+		}
+		return newLoginId;
+		
+	}
+
+	public String firstLogin(LoginDetailsVO loginIdVO,Optional<User> user) {
 		LocalDateTime now = LocalDateTime.now();
 		Instant instant = now.atZone(ZoneId.systemDefault()).toInstant();
 		Date presentTime = Date.from(instant);
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:MM:ss");
 		String presentDate = sdf.format(presentTime);
 		Date loginDate = presentTime;
 		try {
@@ -66,38 +74,80 @@ public class LoginServiceImpl implements LoginService {
 		loginDetails.setLoginStatus("Logged In");
 		loginDetails.setLoginLattitude(loginIdVO.getLoginLattitude());
 		loginDetails.setLoginLongitude(loginIdVO.getLoginLongitude());
-		loginRepo.save(loginDetails);
-		String loginId = loginRepo.findByLoginId(user.get().getUserId());
-		loginIdVO.setLoginId(Integer.parseInt(loginId));
-		loginIdVO.setUserId(user.get().getUserId());
+		LoginDetails newlog=loginRepo.save(loginDetails);
+		String loginId = newlog.getLoginId()+"";
 		return loginId;
-		/*
-		 * }else { return "Password Doesn't Matched"; } }else { return
-		 * "User Doesn't Exists"; }
-		 */
+		
 	}
+	public String logoutForceFully(LoginDetailsVO loginIdVO,LoginDetails login_id,Optional<User> user ) {
+		String loginId=null;
+		if(login_id.getLogoutDate()==null) {
+			LoginDetails loginUpdate = loginRepo.findById(login_id.getLoginId())
+					.orElseThrow(() -> new ResourceNotFoundException("LoginDetails", "loginId", login_id.getLoginId()));
+				
+			String sDate6 = login_id.getLoginDate().getDate()+"-"+login_id.getLoginDate().getMonth()+"-"+login_id.getLoginDate().getYear()+" 23:00:00";
+			SimpleDateFormat formatter6=new SimpleDateFormat("dd-MM-yyyy HH:mm:ss"); 
+			Date date6=null;
+			try {
+				date6 = formatter6.parse(sDate6);
+			} catch (ParseException e1) {
+			e1.printStackTrace();
+			}  
+	       
+	         System.out.println("Converted date is : " + date6);
 
+				try {
+					
+					loginUpdate.setLogoutTime(date6);
+					loginUpdate.setLoginStatus("Logged Out");
+					loginUpdate.setLogoutDate(date6);
+					loginRepo.save(loginUpdate);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				loginId = firstLogin(loginIdVO, user);	
+		}
+		else {
+			
+			loginId = firstLogin(loginIdVO, user);
+						
+		}
+		return loginId;
+	}
+	
 	public String logout(LoginDetailsVO logoutVO) {
 		LoginDetails loginUpdate = loginRepo.findById(logoutVO.getLoginId())
 				.orElseThrow(() -> new ResourceNotFoundException("LoginDetails", "loginId", logoutVO.getLoginId()));
+		
 		if (loginUpdate.getLoginStatus().equals("Logged In")) {
+			
 			System.out.println(logoutVO.getLoginId());
 			LocalDateTime now = LocalDateTime.now();
 			Instant instant = now.atZone(ZoneId.systemDefault()).toInstant();
 			Date presentTime = Date.from(instant);
 			Date loginTime = loginUpdate.getLoginTime();
 			Date logoutTime = presentTime;
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:MM:ss");
+			String presentDate = sdf.format(presentTime);
+			Date logoutDate = presentTime;
+			
 			loginUpdate.setLogoutTime(logoutTime);
 			loginUpdate.setLogoutLattitude(logoutVO.getLogoutLattitude());
 			loginUpdate.setLogoutLongitude(logoutVO.getLogoutLattitude());
 			loginUpdate.setLoginLocation(logoutVO.getLoginLocation());
 			loginUpdate.setLoginStatus("Logged Out");
+			loginUpdate.setLogoutDate(logoutDate);
 			long diff = logoutTime.getTime() - loginTime.getTime();
 			long loginHours = diff / (60 * 60 * 1000) % 24;
 			long loginMin = diff / (60 * 1000) % 60;
 			long loginSec = diff / 1000 % 60;
 			Date dt = new Date(diff);
 			System.out.println(dt);
+			Date date_diff = new Date(diff);
+			System.out.println(date_diff.toString());
 
 			String hh = Long.toString(loginHours);
 			String MM = Long.toString(loginMin);
@@ -125,6 +175,10 @@ public class LoginServiceImpl implements LoginService {
 	public List<LoginDetailReportVO> getLoginRepot(ReportVO reportVO) {
 		List<UserDetails> userList = userDetailsRep.getLoginReport(reportVO.getFromDate(), reportVO.getToDate());
 		List<LoginDetailReportVO> lr = new ArrayList<LoginDetailReportVO>();
+//		java.util.Iterator<LoginDetailReportVO> itr=lr.iterator();
+//		while(itr.hasNext()) {
+//			System.out.println(x);
+//		}
 		for (UserDetails objsrc : userList) {
 			LoginDetailReportVO objtar = new LoginDetailReportVO();
 			BeanUtils.copyProperties(objsrc, objtar);
@@ -142,9 +196,13 @@ public class LoginServiceImpl implements LoginService {
 		for (LoginDetails objsrc : ld) {
 			UserDetailReportVO objtar = new UserDetailReportVO();
 			BeanUtils.copyProperties(objsrc, objtar);
+			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			String presentDate = sdf.format(objtar.getLoginDate());
+			String loginDate = presentDate;
+			objtar.setsLoginDate(loginDate);
+			
 			lr.add(objtar);
-		}
-
+			}
 		return lr;
 	}
 

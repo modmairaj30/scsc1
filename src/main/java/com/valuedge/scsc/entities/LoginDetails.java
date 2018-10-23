@@ -29,14 +29,19 @@ public class LoginDetails implements Serializable {
 
 	@Column(name = "user_id")
 	private String userId;
-
+	
 	@Column(name = "login_date")
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date loginDate;
 
 	@Temporal(TemporalType.TIME)
 	@Column(name = "login_time")
 	private Date loginTime;
 
+	@Column(name = "logout_date")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date logoutDate;
+	
 	@Temporal(TemporalType.TIME)
 	@Column(name = "logoutTime")
 	private Date logoutTime;
@@ -61,6 +66,15 @@ public class LoginDetails implements Serializable {
 
 	@Column(name = "logout_longitude")
 	private Double logoutLongitude;
+
+	
+	public Date getLogoutDate() {
+		return logoutDate;
+	}
+
+	public void setLogoutDate(Date logoutDate) {
+		this.logoutDate = logoutDate;
+	}
 
 	public Double getLoginLattitude() {
 		return loginLattitude;

@@ -12,6 +12,8 @@ public class UserDetailReportVO implements Serializable {
 
 	private String loginHours;
 
+	private String sLoginDate;
+	
 	private Date loginDate;
 
 	private Double loginLattitude;
@@ -21,6 +23,15 @@ public class UserDetailReportVO implements Serializable {
 	private Double logoutLattitude;
 
 	private Double logoutLongitude;
+
+	
+	public String getsLoginDate() {
+		return sLoginDate;
+	}
+
+	public void setsLoginDate(String sLoginDate) {
+		this.sLoginDate = sLoginDate;
+	}
 
 	public Double getLoginLattitude() {
 		return loginLattitude;
