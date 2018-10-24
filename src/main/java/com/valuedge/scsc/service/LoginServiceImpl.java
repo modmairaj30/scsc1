@@ -15,7 +15,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.lowagie.text.pdf.hyphenation.TernaryTree.Iterator;
 import com.valuedge.scsc.entities.LoginDetails;
 import com.valuedge.scsc.entities.User;
 import com.valuedge.scsc.entities.UserDetails;
@@ -39,7 +38,9 @@ public class LoginServiceImpl implements LoginService {
 	@Autowired
 	UserDetailRepository userDetailsRep;
 
-	public String login(LoginDetailsVO loginIdVO) {
+	public LoginDetailsVO login(LoginDetailsVO loginIdVO) {
+		
+		LoginDetailsVO res= new LoginDetailsVO();
 		Optional<User> user = userRepo.findByUserName(loginIdVO.getUserName());
 		
 		LoginDetails login_id = loginRepo.findByLoginStatus(user.get().getUserId());
@@ -51,7 +52,9 @@ public class LoginServiceImpl implements LoginService {
 		else {
 			newLoginId=	logoutForceFully(loginIdVO,login_id,user);
 		}
-		return newLoginId;
+		res.setLoginId(Integer.parseInt(newLoginId));
+		res.setUserId(user.get().getUserId());
+		return res;
 		
 	}
 
@@ -59,7 +62,7 @@ public class LoginServiceImpl implements LoginService {
 		LocalDateTime now = LocalDateTime.now();
 		Instant instant = now.atZone(ZoneId.systemDefault()).toInstant();
 		Date presentTime = Date.from(instant);
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:MM:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String presentDate = sdf.format(presentTime);
 		Date loginDate = presentTime;
 		try {
@@ -85,8 +88,8 @@ public class LoginServiceImpl implements LoginService {
 			LoginDetails loginUpdate = loginRepo.findById(login_id.getLoginId())
 					.orElseThrow(() -> new ResourceNotFoundException("LoginDetails", "loginId", login_id.getLoginId()));
 				
-			String sDate6 = login_id.getLoginDate().getDate()+"-"+login_id.getLoginDate().getMonth()+"-"+login_id.getLoginDate().getYear()+" 23:00:00";
-			SimpleDateFormat formatter6=new SimpleDateFormat("dd-MM-yyyy HH:mm:ss"); 
+		/*	String sDate6 = login_id.getLoginDate().getDate()+"-"+(login_id.getLoginDate().getMonth()+1)+"-"+login_id.getLoginDate().getYear()+" 23:00:00";
+			SimpleDateFormat formatter6=new SimpleDateFormat("dd-MM-YYYY HH:mm:ss"); 
 			Date date6=null;
 			try {
 				date6 = formatter6.parse(sDate6);
@@ -95,12 +98,12 @@ public class LoginServiceImpl implements LoginService {
 			}  
 	       
 	         System.out.println("Converted date is : " + date6);
-
+		 */
 				try {
 					
-					loginUpdate.setLogoutTime(date6);
+					loginUpdate.setLogoutTime(loginUpdate.getLoginDate());
 					loginUpdate.setLoginStatus("Logged Out");
-					loginUpdate.setLogoutDate(date6);
+					loginUpdate.setLogoutDate(loginUpdate.getLoginDate());
 					loginRepo.save(loginUpdate);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -130,7 +133,7 @@ public class LoginServiceImpl implements LoginService {
 			Date loginTime = loginUpdate.getLoginTime();
 			Date logoutTime = presentTime;
 			
-			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:MM:ss");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String presentDate = sdf.format(presentTime);
 			Date logoutDate = presentTime;
 			

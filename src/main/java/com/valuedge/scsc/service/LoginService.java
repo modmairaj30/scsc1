@@ -10,7 +10,7 @@ import com.valuedge.scsc.vo.ReportVO;
 import com.valuedge.scsc.vo.UserDetailReportVO;
 
 public interface LoginService {
-	String login(LoginDetailsVO loginIdVO);
+	LoginDetailsVO login(LoginDetailsVO loginIdVO);
 
 	String logout(LoginDetailsVO logoutVO);
 

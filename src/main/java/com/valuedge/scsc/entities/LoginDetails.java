@@ -3,6 +3,7 @@ package com.valuedge.scsc.entities;
 import java.io.Serializable;
 import java.util.Date;
 
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,15 +32,16 @@ public class LoginDetails implements Serializable {
 	private String userId;
 	
 	@Column(name = "login_date")
-	@Temporal(TemporalType.TIMESTAMP)
+	@Temporal(value=TemporalType.TIMESTAMP)
+	//@DateTimeFormat(pattern = "dd/MM/YYYY")
 	private Date loginDate;
 
 	@Temporal(TemporalType.TIME)
 	@Column(name = "login_time")
 	private Date loginTime;
 
+	@Temporal(TemporalType.DATE)
 	@Column(name = "logout_date")
-	@Temporal(TemporalType.TIMESTAMP)
 	private Date logoutDate;
 	
 	@Temporal(TemporalType.TIME)

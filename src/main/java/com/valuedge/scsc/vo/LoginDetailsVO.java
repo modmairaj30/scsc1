@@ -20,6 +20,31 @@ public class LoginDetailsVO implements Serializable {
 	private String password;
 
 	private Date loginDate;
+	
+	
+	private Date logoutDate;
+	
+	private String sLogoutDate;
+	
+	
+	
+	public Date getLogoutDate() {
+		return logoutDate;
+	}
+
+	public void setLogoutDate(Date logoutDate) {
+		this.logoutDate = logoutDate;
+	}
+
+	public String getsLogoutDate() {
+		return sLogoutDate;
+	}
+
+	public void setsLogoutDate(String sLogoutDate) {
+		this.sLogoutDate = sLogoutDate;
+	}
+
+	private String sLoginDate;
 
 	private String loginStatus;
 
@@ -153,6 +178,13 @@ public class LoginDetailsVO implements Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public String getsLoginDate() {
+		return sLoginDate;
+	}
+
+	public void setsLoginDate(String sLoginDate) {
+		this.sLoginDate = sLoginDate;
 	}
 
 	@Override
